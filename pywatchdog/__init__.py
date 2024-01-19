@@ -26,9 +26,7 @@ class Watchdog:
         self.close()
 
     def __str__(self):
-        return "{} [version {}] via {}".format(
-            self.identity, self.firmware_version, self._file
-        )
+        return f"{self.identity} [version {self.firmware_version}] via {self._file}"
 
     @property
     def identity(self):
@@ -99,20 +97,16 @@ class Watchdog:
         return self._ioctl_get(Request.WDIOC_GETSUPPORT, watchdog_info)
 
     @property
-    def status(self):  # Should this be called regularly for temperature trip?
+    def status(self):    # Should this be called regularly for temperature trip?
         """Return a list of flags describing the current status."""
         res = self._ioctl_get(Request.WDIOC_GETSTATUS)
-        if res == 0:
-            return None
-        return [s for s in Status if res & s and s >= 0]
+        return None if res == 0 else [s for s in Status if res & s and s >= 0]
 
     @property
     def boot_status(self):
         """Return a list of flags describing the status at the last reboot."""
         res = self._ioctl_get(Request.WDIOC_GETBOOTSTATUS)
-        if res == 0:
-            return None
-        return [s for s in Status if res & s and s >= 0]
+        return None if res == 0 else [s for s in Status if res & s and s >= 0]
 
     @property
     def temperature(self):
